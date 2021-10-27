@@ -1,7 +1,7 @@
 
 local Proxy = module("vrp", "lib/Proxy")
 
-local vRP = Proxy.getInterface('vRP');
+local vRP = Proxy.getInterface('vRP')
 
 local internalQuestions = {}
 
@@ -18,9 +18,11 @@ local findInternalQuestion = function(user_id)
   return nil
 end
 
-RegisterCommand('n', function(player,args,r)
-   
+local askQuestion = function(...)
 
+  local args = {...}
+  local player = args[1]
+  local r = args[3]
   local questionMessage = r:sub(3)
   local user_id = vRP.getUserId{player}
 
@@ -38,11 +40,12 @@ RegisterCommand('n', function(player,args,r)
     askerName = name
   })
 
-
   TriggerClientEvent('chatMessage', player,'[^6RT^0] Un membru staff iti va raspunde in curand!')
   vRP.sendStaffMessage{'[^4INTREBARE^0] ' .. name .. ' [^4' .. user_id .. '^0] ' ..' a intrebat: ' .. questionMessage}
+end
 
-end)
+RegisterCommand('n', askQuestion)
+
 
 RegisterCommand('questions', function(player)
   local user_id = vRP.getUserId{player}
@@ -56,18 +59,20 @@ RegisterCommand('questions', function(player)
 
 end)
 
-RegisterCommand('nr', function(player,args,r)
+local respond =  function(...)
+  local args = {...}
+  local player = args[1]
+  local r = args[3]
   local user_id = vRP.getUserId{player}
 
   if not vRP.isUserTrialHelper{user_id} then return TriggerClientEvent('chatMessage', player, '^1Eroare^0: Nu ai acces la aceasta comanda!') end;
-  
-  local askerId = tonumber(args[1])
+  local askerId = tonumber(args[2][1])
   if not askerId then return TriggerClientEvent('chatMessage', player, '^1Eroare^0: /nr <id>') end;
   if askerId == '' or askerId <= 0 then return TriggerClientEvent('chatMessage', player, '^1Eroare^0: /nr <id>') end;
-  if not args[1] then return TriggerClientEvent('chatMessage', player, '^1Eroare^0: /nr <id>') end;
-    
-  local qObject = findInternalQuestion(askerId)
-  local lengthOfAskerId = args[1]:len()
+
+  local qObject = findInternalQuestion(askerId) 
+
+  local lengthOfAskerId = args[2][1]:len()
 
   local answerString = r:sub(4 + lengthOfAskerId )
 
@@ -79,7 +84,9 @@ RegisterCommand('nr', function(player,args,r)
   TriggerClientEvent('chatMessage', qObject.askerSource, '[^6RT^0] Un membru staff ti-a raspuns: ' .. answerString  )
   TriggerClientEvent('chatMessage', player,'I-ai raspuns lui ^1' .. qObject.askerName .. '^0: ' .. answerString )
   removeInternalQuestion(askerId)
-end)
+end
+
+RegisterCommand('nr',respond)
 
 
 
