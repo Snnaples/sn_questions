@@ -1,4 +1,6 @@
 
+local Proxy = module("vrp", "lib/Proxy")
+
 local vRP = Proxy.getInterface('vRP');
 
 local internalQuestions = {}
