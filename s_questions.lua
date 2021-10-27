@@ -19,6 +19,7 @@ local findInternalQuestion = function(user_id)
 end
 
 RegisterCommand('n', function(player,args,r)
+   
 
   local questionMessage = r:sub(3)
   local user_id = vRP.getUserId{player}
@@ -63,7 +64,8 @@ RegisterCommand('nr', function(player,args,r)
   local askerId = tonumber(args[1])
   if not askerId then return TriggerClientEvent('chatMessage', player, '^1Eroare^0: /nr <id>') end;
   if askerId == '' or askerId <= 0 then return TriggerClientEvent('chatMessage', player, '^1Eroare^0: /nr <id>') end;
-
+  if not args[1] then return TriggerClientEvent('chatMessage', player, '^1Eroare^0: /nr <id>') end;
+    
   local qObject = findInternalQuestion(askerId)
   local lengthOfAskerId = args[1]:len()
 
